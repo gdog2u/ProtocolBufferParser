@@ -20,21 +20,20 @@ sub parse
 		my $wireType = $val & 7;
 		my $fieldNum = $val >> 3;
 
-		$row[$fieldNum] = $::field_types{$wireType}->(\@bytes);
-		last;
+		$row{$fieldNum} = $::field_types{$wireType}->(\@bytes);
 	}
-	
-	print Dumper(\@row);
+
+	return %row;
 }
 
 sub parse_varint
 {
-	my @bytes = @{ $_[0] };
+	my $bytes = $_[0];
 	my @stack = ();
 	my $decimal = 0;
 
 	# Pop values until the MSB is no longer set
-	while(my $val = shift @bytes)
+	while(my $val = shift $bytes)
 	{
 		push(@stack, $val);
 		if(!($val & 0b10000000)){ last; }
@@ -53,4 +52,20 @@ sub parse_varint
 	}
 
 	return $decimal;
+}
+
+sub parse_length_determined
+{
+	my $bytes = $_[0];
+
+	my $string = "";
+	# Get the string's length
+	my $str_length = parse_varint($bytes);
+	
+	while($str_length--)
+	{
+		$string .= chr(shift $bytes);
+	}
+
+	return $string;
 }
