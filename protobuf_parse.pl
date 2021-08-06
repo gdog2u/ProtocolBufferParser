@@ -9,18 +9,9 @@ our %field_types = (
 	5 => '32-bit',
 );
 
-open(my $fh, '<:raw', $ARGV[0]) or die "Forgot input";
-
-my $line = <$fh>;
-
-close($fh);
-
-chomp $line;
-parse($line);
-
 sub parse
 {
-	my @row = ();
+	my %row = ();
 	my @bytes = map { ord } split(//, $_[0]);
 
 	while(@bytes)
