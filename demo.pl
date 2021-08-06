@@ -15,6 +15,8 @@ my $line = <$fh>;
 close($fh);
 
 chomp $line;
-print Dumper(parse($line));
+my %row = parse($line);
+
+print Dumper(\%row);
 
 1;
