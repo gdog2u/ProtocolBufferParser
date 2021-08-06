@@ -33,7 +33,7 @@ sub parse_varint
 	my $decimal = 0;
 
 	# Pop values until the MSB is no longer set
-	while(my $val = shift $bytes)
+	while(my $val = shift @$bytes)
 	{
 		push(@stack, $val);
 		if(!($val & 0b10000000)){ last; }
@@ -64,7 +64,7 @@ sub parse_length_determined
 	
 	while($str_length--)
 	{
-		$string .= chr(shift $bytes);
+		$string .= chr(shift @$bytes);
 	}
 
 	return $string;
